@@ -7,7 +7,4 @@ This feature provides a complete **user settings** experience for a web applicat
 - ✅ Appearance (theme mode)
 - ✅ Account management (change password, delete/disable account)
 
----
-
-## 📁 Folder Structure
 
