@@ -2,7 +2,10 @@ import Label from "../../components/Label";
 import PasswordInput from "../../components/PasswordInput";
 import SubmitButton from "../../components/SubmitButton";
 import { useDispatch, useSelector } from "react-redux";
-import { updateAccountPassword } from "../../store/settingsSlice";
+import {
+  changePassword,
+  updateAccountPassword,
+} from "../../store/settingsSlice";
 
 const Account = () => {
   const passwordData = useSelector((state) => state.settings.account);
@@ -21,9 +24,9 @@ const Account = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const { newPassword, confirmPassword } = passwordData;
+    const { newPassword, confirmNewPassword } = passwordData;
 
-    if (newPassword !== confirmPassword) {
+    if (newPassword !== confirmNewPassword) {
       alert("Passwords do not match");
       return;
     }
@@ -34,6 +37,7 @@ const Account = () => {
       );
       return;
     }
+    dispatch(changePassword);
     console.log("Password changed:", passwordData);
   };
 
@@ -41,21 +45,30 @@ const Account = () => {
     <div>
       <form onSubmit={handleSubmit} className="mt-10">
         <div className="flex flex-col gap-6">
-          {/* new password */}
+          {/* Old password */}
           <div className="grid gap-3 md:grid-cols-3">
-            <Label id="newPassword" label="Change Password:" />
+            <Label id="oldPassword" label="Enter Old Password:" />
+            <PasswordInput
+              id="oldPassword"
+              value={passwordData.oldPassword}
+              onChange={handleChange}
+            />
+          </div>
+          {/* Enter new password */}
+          <div className="grid gap-3 md:grid-cols-3">
+            <Label id="newPassword" label="Enter New Password:" />
             <PasswordInput
               id="newPassword"
               value={passwordData.newPassword}
               onChange={handleChange}
             />
           </div>
-          {/* confirm password */}
+          {/* Confirm new password */}
           <div className="grid gap-3 md:grid-cols-3">
-            <Label id="confirmPassword" label="Confirm Password:" />
+            <Label id="confirmNewPassword" label="Confirm New Password:" />
             <PasswordInput
-              id="confirmPassword"
-              value={passwordData.confirmPassword}
+              id="confirmNewPassword"
+              value={passwordData.confirmNewPassword}
               onChange={handleChange}
             />
           </div>

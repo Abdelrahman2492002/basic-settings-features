@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import defaultProfile from "../assets/defaultProfile.jpg";
 
 const ProfileImageUploader = ({ imageUrl, onImageChange, onImageDelete }) => {
-  const [preview, setPreview] = useState(imageUrl || defaultProfile);
+  const [preview, setPreview] = useState(defaultProfile);
+
+  useEffect(() => {
+    setPreview(imageUrl);
+  }, [imageUrl]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -21,9 +25,13 @@ const ProfileImageUploader = ({ imageUrl, onImageChange, onImageDelete }) => {
   return (
     <div className="flex items-center gap-6 md:mb-10 col-span-2">
       <img
-        src={preview}
+        src={preview || null}
         alt="Profile"
         className="w-20 h-20 rounded-full object-cover"
+        onError={(e) => {
+          e.target.src = defaultProfile;
+          e.target.onError = null;
+        }}
       />
       <div className="flex items-center gap-4">
         <label
@@ -42,7 +50,7 @@ const ProfileImageUploader = ({ imageUrl, onImageChange, onImageDelete }) => {
         <button
           onClick={handleDelete}
           type="button"
-          className="text-red-500 text-sm hover:underline"
+          className="text-red-500 text-sm hover:underline cursor-pointer"
         >
           Delete
         </button>
