@@ -5,7 +5,7 @@ import SubmitButton from "../../components/SubmitButton";
 import ProfileImageUploader from "../../components/ProfileImageUploader";
 import defaultProfile from "../../assets/defaultProfile.jpg";
 import { Loader2 } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { toast } from "sonner";
 
 import {
   updateUser,
@@ -13,19 +13,19 @@ import {
   getProfileData,
   editProfileData,
   deleteImage,
+  resetEditStatus,
 } from "../../store/settingsSlice";
 import { LocationEdit, Mails } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const Profile = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.settings.user);
-  const status = useSelector((state) => state.settings.status);
+  const { user, status, error } = useSelector((state) => state.settings);
   const [imageFile, setImageFile] = useState(null);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    const profileFields = ["fullName", "bio", "image", "verified"];
+    const profileFields = ["fullName", "bio", "image"];
     if (profileFields.includes(id)) {
       dispatch(updateUser({ profile: { [id]: value } }));
     } else {
@@ -44,7 +44,7 @@ const Profile = () => {
     dispatch(updateProfileImage({ url: defaultProfile }));
 
     const formData = new FormData();
-    formData.append("user.profile.image", defaultProfile);
+    formData.append("user.profile.image", "");
 
     dispatch(deleteImage(formData));
   };
@@ -58,7 +58,6 @@ const Profile = () => {
     formData.append("email", user.email);
     formData.append("profile.full_name", user.profile.full_name);
     formData.append("profile.bio", user.profile.bio);
-    formData.append("profile.verified", user.profile.verified);
 
     if (imageFile) {
       formData.append("profile.image", imageFile);
@@ -71,32 +70,36 @@ const Profile = () => {
     dispatch(getProfileData());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (status.getProfile === "failed") {
+      toast.error(error.getProfile);
+    }
+  }, [status.getProfile, error.getProfile]);
+
+  useEffect(() => {
+    if (status.editProfile === "succeeded") {
+      toast.success("The data has been updated successfully");
+      dispatch(resetEditStatus());
+    } else if (status.editProfile === "failed") {
+      toast.error(error.editProfile);
+      dispatch(resetEditStatus());
+    }
+  }, [status.editProfile, error.editProfile]);
+
   if (status.getProfile === "loading") {
     return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="animate-spin w-8 h-8 md:w-12 md:h-12 text-blue-600" />
+      <div className="flex h-64 items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600 md:h-12 md:w-12" />
       </div>
     );
   }
 
-  if (status.editProfile === "succeeded") {
-    return (
-      <Alert variant="default | destructive">
-        <Terminal />
-        <AlertTitle>Heads up!</AlertTitle>
-        <AlertDescription>
-          You can add components and dependencies to your app using the cli.
-        </AlertDescription>
-      </Alert>
-    );
-  }
-
   return (
-    <div>
+    <div className="animate-in fade-in duration-700">
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         {/* profile picture */}
         <div className="grid gap-3 md:grid-cols-3">
-          <p className="md:mb-20 col-span-1 font-medium">Profile picture</p>
+          <p className="col-span-1 font-medium md:mb-20">Profile picture</p>
           <ProfileImageUploader
             imageUrl={user.profile.image}
             onImageChange={handleImageChange}
@@ -107,7 +110,7 @@ const Profile = () => {
         {/* Name */}
         <div className="grid gap-3 md:grid-cols-3">
           <Label id="name" label="Name:" />
-          <div className="flex gap-2 md:gap-8 flex-1 col-span-2">
+          <div className="col-span-2 flex flex-1 gap-2 md:gap-8">
             <Input
               id="first_name"
               value={user.first_name}
@@ -163,7 +166,7 @@ const Profile = () => {
             id="bio"
             value={user.profile.bio}
             onChange={handleChange}
-            className="w-full mt-2 p-4 border resize-none border-gray-200 rounded h-24 outline-none bg-white col-span-2"
+            className="col-span-2 mt-2 h-24 w-full resize-none rounded border border-gray-200 bg-white p-4 text-[#12121261] outline-none"
             placeholder="Write about yourself"
           ></textarea>
         </div>

@@ -5,18 +5,34 @@ import { Navigate } from "react-router";
 // Async thunks
 export const getProfileData = createAsyncThunk(
   "settings/getProfile",
-  async () => {
-    const response = await axiosInstance("/profile/");
-    return response.data;
-  }
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance("/profile/");
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error.response.data.detail ||
+        "Failed to get profile data, please check internet connection";
+      return rejectWithValue(errorMessage);
+    }
+  },
 );
 
 export const editProfileData = createAsyncThunk(
   "settings/editProfile",
-  async (formData) => {
-    const response = await axiosInstance.patch("/profile/", formData);
-    return response.data;
-  }
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.patch("/profile/", formData);
+      return response.data;
+    } catch (error) {
+      console.log("Edit profile error:", error.response?.data);
+
+      const errorMessage =
+        error.response.data.detail ||
+        "Failed to get profile data, please check internet connection";
+      return rejectWithValue(errorMessage);
+    }
+  },
 );
 
 export const deleteImage = createAsyncThunk(
@@ -24,36 +40,51 @@ export const deleteImage = createAsyncThunk(
   async (formData) => {
     const response = await axiosInstance.patch("/profile/", formData);
     return response.data;
-  }
+  },
 );
 
 export const changePassword = createAsyncThunk(
   "settings/changePassword",
-  async (account) => {
-    const response = await axiosInstance.post("/change-password/", {
-      old_password: account.oldPassword,
-      new_password: account.newPassword,
-      confirm_password: account.confirmNewPassword,
-    });
-    return response.data;
-  }
+  async (account, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post("/change-password/", {
+        old_password: account.old_password,
+        new_password: account.new_password,
+        confirm_password: account.confirm_password,
+      });
+      return response.data;
+    } catch (error) {
+      const resData = error.response?.data;
+
+      let errorMessage = "Failed to change password";
+
+      if (resData && typeof resData === "object") {
+        errorMessage = Object.values(resData).flat().join(" - ");
+      }
+
+      return rejectWithValue(errorMessage);
+    }
+  },
 );
 
 export const deleteAccount = createAsyncThunk(
   "settings/deleteAccount",
-  async () => {
-    const confirmed = window.confirm("هل أنت متأكد أنك تريد حذف الحساب؟");
-    if (!confirmed) return;
+  async (_, { rejectWithValue }) => {
     try {
-      await axiosInstance.delete("/delete-account/");
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
-      Navigate("/login");
+      const response = await axiosInstance.delete("/users/delete/");
+      return response.data;
     } catch (error) {
-      console.error("خطأ أثناء حذف الحساب:", error);
-      alert("حدث خطأ أثناء حذف الحساب");
+      const resData = error.response?.data;
+
+      let errorMessage = "Failed to delete account, check internet connection";
+
+      if (resData && typeof resData === "object") {
+        errorMessage = Object.values(resData).flat().join(" - ");
+      }
+
+      return rejectWithValue(errorMessage);
     }
-  }
+  },
 );
 
 // Initial state
@@ -94,9 +125,9 @@ const initialState = {
     theme: "systemTheme",
   },
   account: {
-    oldPassword: "",
-    newPassword: "",
-    confirmNewPassword: "",
+    old_password: "",
+    new_password: "",
+    confirm_password: "",
   },
 };
 
@@ -122,10 +153,17 @@ const settingsSlice = createSlice({
       state.appearance.theme = action.payload;
     },
     updateAccountPassword: (state, action) => {
-      const { oldPassword, newPassword, confirmNewPassword } = action.payload;
-      state.account.oldPassword = oldPassword;
-      state.account.newPassword = newPassword;
-      state.account.confirmNewPassword = confirmNewPassword;
+      const { key, value } = action.payload;
+      state.account[key] = value;
+    },
+    resetEditStatus: (state) => {
+      state.status.editProfile = "idle";
+      state.error.editProfile = null;
+    },
+    resetPasswordInputs: (state) => {
+      state.account.old_password = "";
+      state.account.new_password = "";
+      state.account.confirm_password = "";
     },
   },
   extraReducers: (builder) => {
@@ -147,23 +185,22 @@ const settingsSlice = createSlice({
           const key = getActionKey(action);
           if (state.status[key] !== undefined) state.status[key] = "loading";
           if (state.error[key] !== undefined) state.error[key] = null;
-        }
+        },
       )
       .addMatcher(
         (action) => action.type.endsWith("/fulfilled"),
         (state, action) => {
           const key = getActionKey(action);
           if (state.status[key] !== undefined) state.status[key] = "succeeded";
-        }
+        },
       )
       .addMatcher(
         (action) => action.type.endsWith("/rejected"),
         (state, action) => {
           const key = getActionKey(action);
           if (state.status[key] !== undefined) state.status[key] = "failed";
-          if (state.error[key] !== undefined)
-            state.error[key] = action.error.message;
-        }
+          if (state.error[key] !== undefined) state.error[key] = action.payload;
+        },
       );
   },
 });
@@ -175,6 +212,8 @@ export const {
   updateProfileImage,
   updateTheme,
   updateAccountPassword,
+  resetEditStatus,
+  resetPasswordInputs,
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

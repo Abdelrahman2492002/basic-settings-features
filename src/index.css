@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+@import "tw-animate-css";
 
 body {
   font-family: "Noto Sans Arabic", sans-serif;
@@ -7,4 +8,16 @@ body {
 
 .active {
   border-bottom: 3px solid black;
+}
+
+.custom-toast {
+  @apply rounded-md border p-3 text-sm shadow-lg;
+}
+
+.custom-toast-success {
+  @apply border-green-300 bg-green-50 text-green-700;
+}
+
+.custom-toast-error {
+  @apply border-red-300 bg-red-50 text-red-700;
 }

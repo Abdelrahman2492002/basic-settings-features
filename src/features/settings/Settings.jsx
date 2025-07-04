@@ -6,6 +6,7 @@ import {
   ListboxOptions,
 } from "@headlessui/react";
 import { CheckIcon, ChevronDown } from "lucide-react";
+import { Toaster } from "@/components/ui/sonner";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ const Settings = () => {
     <div className="pl-6 md:pl-36 pt-14 pr-6 md:pr-16 pb-14 bg-[#f2f2f2] min-h-screen">
       <h2 className="font-bold text-2xl md:text-4xl">Settings</h2>
       <p className="pt-2 max-md:text-sm ">Manage your account settings</p>
+      <Toaster />
 
       {/* Tabs for medium and large screens */}
       <ul className="hidden md:flex pt-8 items-center gap-x-12 font-semibold text-lg border-b-2 border-[#CCCCCC]">
