@@ -54,7 +54,7 @@ const Account = () => {
   };
 
   return (
-    <div className="animate-in fade-in duration-700">
+    <div className="animate-in fade-in duration-800">
       <form onSubmit={handleSubmit} className="mt-10">
         <div className="flex flex-col gap-6">
           {/* Old password */}

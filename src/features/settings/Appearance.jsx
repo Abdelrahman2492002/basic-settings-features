@@ -14,7 +14,7 @@ const Appearance = () => {
   };
 
   return (
-    <div className="animate-in fade-in duration-700">
+    <div className="animate-in fade-in duration-800">
       <h3 className="text-base md:text-lg">Preference mode</h3>
       <div className="grid grid-cols-1 gap-12 px-8 pt-8 max-md:justify-items-center md:grid-cols-2 lg:grid-cols-3">
         <ThemeOption

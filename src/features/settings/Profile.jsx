@@ -95,7 +95,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="animate-in fade-in duration-700">
+    <div className="animate-in fade-in duration-800">
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         {/* profile picture */}
         <div className="grid gap-3 md:grid-cols-3">
