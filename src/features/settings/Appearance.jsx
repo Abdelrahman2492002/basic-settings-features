@@ -2,7 +2,7 @@ import ThemeOption from "../../components/ThemeOption";
 import systemTheme from "../../assets/systemTheme.png";
 import lightTheme from "../../assets/lightTheme.png";
 import { useDispatch, useSelector } from "react-redux";
-import { updateTheme } from "../../store/settingsSlice";
+import { updateTheme } from "./settingsSlice";
 import { Monitor, Moon, Sun } from "lucide-react";
 
 const Appearance = () => {

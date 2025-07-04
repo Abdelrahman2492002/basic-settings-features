@@ -6,7 +6,7 @@ import {
   changePassword,
   resetPasswordInputs,
   updateAccountPassword,
-} from "../../store/settingsSlice";
+} from "./settingsSlice";
 import { toast } from "sonner";
 
 import DeleteAccountButton from "@/components/DeleteAccountButton";

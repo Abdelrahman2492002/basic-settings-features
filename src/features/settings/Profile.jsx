@@ -14,7 +14,7 @@ import {
   editProfileData,
   deleteImage,
   resetEditStatus,
-} from "../../store/settingsSlice";
+} from "../../features/settings/settingsSlice";
 import { LocationEdit, Mails } from "lucide-react";
 import { useEffect, useState } from "react";
 

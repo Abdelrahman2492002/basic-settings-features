@@ -1,6 +1,6 @@
 import ToggleSwitch from "../../components/ToggleSwitch";
 import { useDispatch, useSelector } from "react-redux";
-import { updateNotifications } from "../../store/settingsSlice";
+import { updateNotifications } from "./settingsSlice";
 
 const Notifications = () => {
   const notifications = useSelector((state) => state.settings.notifications);
