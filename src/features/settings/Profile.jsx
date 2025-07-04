@@ -142,23 +142,6 @@ const Profile = () => {
           />
         </div>
 
-        {/* Job Title */}
-        <div className="grid gap-3 md:grid-cols-3">
-          <Label id="jobTitle" label="Job Title:" />
-          <Input id="jobTitle" value={user.jobTitle} onChange={handleChange} />
-        </div>
-
-        {/* Country */}
-        <div className="grid gap-3 md:grid-cols-3">
-          <Label id="country" label="Country:" />
-          <Input
-            id="country"
-            value={user.country}
-            onChange={handleChange}
-            icon={LocationEdit}
-          />
-        </div>
-
         {/* Bio */}
         <div className="grid gap-3 md:grid-cols-3">
           <Label id="bio" label="Bio:" />

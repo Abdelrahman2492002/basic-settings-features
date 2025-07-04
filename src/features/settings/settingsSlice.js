@@ -36,9 +36,15 @@ export const editProfileData = createAsyncThunk(
 
 export const deleteImage = createAsyncThunk(
   "settings/deleteImage",
-  async (formData) => {
-    const response = await axiosInstance.patch("/profile/", formData);
-    return response.data;
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.patch("/profile/", formData);
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error.response.data.detail || "Failed to delete image";
+      return rejectWithValue(errorMessage);
+    }
   },
 );
 
