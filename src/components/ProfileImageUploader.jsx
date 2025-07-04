@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import defaultProfile from "../assets/defaultProfile.jpg";
+import defaultProfile from "../assets/defaultProfile.jpeg";
 
 const ProfileImageUploader = ({ imageUrl, onImageChange, onImageDelete }) => {
   const [preview, setPreview] = useState(defaultProfile);

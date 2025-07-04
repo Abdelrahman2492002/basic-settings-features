@@ -3,7 +3,7 @@ import Label from "../../components/Label";
 import Input from "../../components/Input";
 import SubmitButton from "../../components/SubmitButton";
 import ProfileImageUploader from "../../components/ProfileImageUploader";
-import defaultProfile from "../../assets/defaultProfile.jpg";
+import defaultProfile from "../../assets/defaultProfile.jpeg";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -44,7 +44,7 @@ const Profile = () => {
     dispatch(updateProfileImage({ url: defaultProfile }));
 
     const formData = new FormData();
-    formData.append("user.profile.image", "");
+    formData.append("profile.image", "");
 
     dispatch(deleteImage(formData));
   };
